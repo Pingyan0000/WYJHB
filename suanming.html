@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>江湖一梦：灵根与天机</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* 仙气配色方案 */
+            --bg-gradient: linear-gradient(135deg, #e0f7fa 0%, #e8f5e9 50%, #f0f4c3 100%); /* 蓝到绿的柔和渐变 */
+            --primary-blue: #4facfe; /* 天青色 */
+            --primary-green: #43e97b; /* 翠绿色 */
+            --text-main: #2c3e50; /* 深墨色 */
+            --text-muted: #607d8b; /* 浅墨色 */
+            --container-bg: rgba(255, 255, 255, 0.75); /* 半透明宣纸/毛玻璃质感 */
+            --border-color: rgba(125, 200, 220, 0.3);
+            --font-serif: 'Noto Serif SC', 'Songti SC', serif;
+        }
+
+        body, html {
+            margin: 0; padding: 0; 
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            font-family: var(--font-serif);
+            overflow-x: hidden;
+            line-height: 1.7;
+            /* 添加淡淡的云纹背景图（可选，此处用CSS模拟） */
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(255,255,255,0.4) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.4) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 640px;
+            margin: 40px auto;
+            padding: 30px;
+            min-height: 80vh;
+            /* 核心容器：毛玻璃+宣纸质感 */
+            background: var(--container-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px rgba(0, 100, 150, 0.1);
+            transition: all 0.5s ease;
+        }
+
+        h1, h2 {
+            font-weight: 700;
+            color: #005c97; /* 深青色标题 */
+            text-align: center;
+            margin-bottom: 30px;
+            letter-spacing: 3px;
+            position: relative;
+        }
+        /* 标题下方的装饰线 */
+        h1::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary-blue), var(--primary-green));
+            margin: 15px auto 0;
+            border-radius: 2px;
+        }
+
+        /* Intro Screen Text - 竹简/卷轴风格 */
+        .scroll-text-box {
+            max-height: 50vh;
+            overflow-y: auto;
+            padding: 25px;
+            background: rgba(255, 253, 240, 0.8); /* 米黄色竹简底 */
+            border-top: 3px double var(--border-color);
+            border-bottom: 3px double var(--border-color);
+            margin-bottom: 30px;
+            border-radius: 4px;
+            /* 自定义滚动条 */
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-blue) transparent;
+        }
+        .scroll-text-box::-webkit-scrollbar { width: 6px; }
+        .scroll-text-box::-webkit-scrollbar-thumb { background-color: var(--primary-blue); border-radius: 10px;}
+
+        .dramatic-text p { 
+            margin-bottom: 15px; 
+            text-align: justify;
+            text-indent: 2em;
+        }
+        .highlight-text {
+            color: #d9534f; /* 胭脂红，用于强调 */
+            font-weight: bold;
+            text-align: center;
+            text-indent: 0 !important;
+            margin-top: 25px;
+            font-size: 1.2em;
+        }
+
+        /* Buttons - 玉石/灵力质感 */
+        button {
+            background: linear-gradient(to right, #4facfe 0%, #00f260 100%);
+            border: none;
+            color: white;
+            padding: 14px 28px;
+            font-size: 1.1rem;
+            font-family: var(--font-serif);
+            cursor: pointer;
+            border-radius: 50px; /* 圆润造型 */
+            width: 100%;
+            margin-top: 25px;
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.3);
+            transition: all 0.3s ease;
+            letter-spacing: 2px;
+        }
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 242, 96, 0.4);
+            background: linear-gradient(to right, #00f260 0%, #4facfe 100%); /* hover时颜色流动 */
+        }
+        button:active { transform: translateY(1px); }
+
+        /* Quiz & Options - 竹牌质感 */
+        .question-title {
+            font-size: 1.25rem;
+            color: #005c97;
+            margin-bottom: 25px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .option {
+            display: block;
+            width: 100%;
+            text-align: left;
+            margin-bottom: 12px;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #e0e0e0;
+            color: var(--text-main);
+            border-radius: 12px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .option:hover {
+            border-color: var(--primary-blue);
+            background: aliceblue;
+            padding-left: 25px; /* 轻微位移 */
+        }
+        /* 选中时的灵力波动效果 */
+        .option::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 5px; height: 100%;
+            background: linear-gradient(to bottom, var(--primary-blue), var(--primary-green));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .option:hover::after { opacity: 1; }
+
+        .progress-container {
+            width: 100%; height: 6px; background: #e0e0e0;
+            border-radius: 10px; margin-bottom: 30px; overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%; background: linear-gradient(to right, var(--primary-blue), var(--primary-green));
+            width: 0%; transition: width 0.4s ease-in-out; border-radius: 10px;
+        }
+
+        /* Result Screen */
+        .result-card {
+            text-align: center;
+            padding: 30px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 20px;
+            border: 2px solid transparent;
+            background-image: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)), linear-gradient(to right, var(--primary-blue), var(--primary-green));
+            background-origin: border-box;
+            background-clip: content-box, border-box;
+            margin-bottom: 30px;
+        }
+        .result-title-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #005c97;
+            margin-bottom: 15px;
+        }
+        .result-desc-text {
+            font-size: 1.05rem;
+            color: var(--text-main);
+            line-height: 1.8;
+            text-align: left;
+        }
+
+        /* Rumor Slips (代替弹幕) */
+        .rumor-box {
+            background: rgba(240, 248, 255, 0.6);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px dashed var(--primary-blue);
+        }
+        .rumor-title {
+            text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px;
+            position: relative;
+        }
+        .rumor-slip {
+            background: #fffbf0; /* 宣纸色 */
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            font-size: 0.95rem;
+            border-left: 4px solid var(--text-muted);
+            opacity: 0; animation: fadeInSlip 0.5s forwards;
+        }
+        .rumor-slip:nth-child(2) { border-color: var(--primary-blue); animation-delay: 0.2s; }
+        .rumor-slip:nth-child(3) { border-color: #ff9a9e; animation-delay: 0.4s; }
+        .rumor-slip:nth-child(4) { border-color: var(--primary-green); animation-delay: 0.6s; }
+
+        @keyframes fadeInSlip { to { opacity: 1; } }
+
+        /* Advice Section */
+        .advice-box {
+            margin-top: 30px; padding: 30px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #e0f7fa 0%, #fff 100%);
+            text-align: center; display: none;
+            box-shadow: inset 0 0 20px rgba(79, 172, 254, 0.1);
+            border: 1px solid #b2ebf2;
+        }
+        .advice-text {
+            font-family: var(--font-serif); font-size: 1.6rem; color: #005c97;
+            margin-bottom: 15px; font-weight: bold;
+        }
+        .advice-sub { font-size: 1rem; color: var(--text-muted); font-style: italic;}
+        
+        .btn-outline {
+            background: transparent; color: var(--text-muted);
+            border: 2px solid var(--text-muted); box-shadow: none;
+        }
+        .btn-outline:hover {
+            background: var(--text-muted); color: white; transform: none;
+            box-shadow: none;
+        }
+
+        /* Helper */
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="intro-screen">
+        <h1>江湖一梦 · 灵根初探</h1>
+        <div class="scroll-text-box">
+            <div class="dramatic-text">
+                <p>老天爷，你搞错了吧，我怎么会是每天窝在家里的阴暗死宅。</p>
+                <p>我应该骑马观花，见春水不息，再登凌云之志。</p>
+                <p>我应该宗门选道时，不选凡尘之道，旁人问起才知是心道。</p>
+                <p>我应该在宗门里是被人人敬仰的大师兄，也是人人称赞的百年第一。</p>
+                <p>我应该跟宿敌决斗时，轻轻擦去唇边溢出的血，只说句，再来。</p>
+                <p>我应该某个夜晚躺在藏书阁楼顶，伸手摸天，却忽然想起年幼时师傅的话语，开始思考修仙真的能成仙吗。</p>
+                <p>我应该喝过西域的葡萄酒，看过沧海月明，听到过羽衣霓裳曲，后又见这些变成百姓家的一缕炊烟。</p>
+                <p>我应该见过太多事情后，还能保留自己当初的那份初心。</p>
+                <p>我应该被篆刻在功名碑上，沧海桑田，海枯石烂，我却不朽。</p>
+                <p class="highlight-text">老天爷，我怎么会投胎到这里！</p>
+            </div>
+        </div>
+        <p style="text-align: center; color: var(--text-muted);">—— 且慢，待本座为你探一探这红尘根骨 ——</p>
+        <button onclick="startQuiz()">入定 · 开启神识探查</button>
+    </div>
+
+    <div id="quiz-screen" class="hidden">
+        <div class="progress-container"><div class="progress-fill" id="progress"></div></div>
+        <div id="question-box"></div>
+        <div id="options-box"></div>
+    </div>
+
+    <div id="result-screen" class="hidden">
+        <h2>探查结果：你的江湖本相</h2>
+        
+        <div class="result-card">
+            <div class="result-title-text" id="res-title"></div>
+            <div class="result-desc-text" id="res-desc"></div>
+        </div>
+        
+        <div class="rumor-box">
+            <div class="rumor-title">—— 宗门传音壁上的匿名纸条 ——</div>
+            <div class="rumor-slip" id="rumor-1"></div>
+            <div class="rumor-slip" id="rumor-2"></div>
+            <div class="rumor-slip" id="rumor-3"></div>
+        </div>
+
+        <button onclick="revealAdvice()" id="btn-advice">叩问祖师：求一道灵机指引</button>
+        
+        <div class="advice-box" id="advice-box">
+            <div class="advice-text" id="advice-main"></div>
+            <div class="advice-sub" id="advice-sub"></div>
+            <button onclick="rerollAdvice()" class="btn-outline" style="margin-top: 20px;">弟子愚钝，求祖师再赐一签</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 12道极简测试题配置 (保持不变，文案微调去中二化)
+    const questions = [
+        { q: "面对突如其来的Deadline（渡劫期）：", opts: [ {t: "立刻闭关爆肝，追求完美突破", pts: [0,4]}, {t: "在脑海里反复推演失败的因果", pts: [1,2]}, {t: "寻找同门道友，结阵分担压力", pts: [3,6]}, {t: "顺其自然，凭直觉应对", pts: [5,7]} ] },
+        { q: "宗门议事厅内众人争执不下，你会：", opts: [ {t: "拿出宗门律令，按规矩裁定", pts: [4,0]}, {t: "出面调停，安抚各方道心", pts: [2,6]}, {t: "心中烦躁，提出激进的破局之法", pts: [5,0]}, {t: "神游物外，思考天地大道", pts: [7,1]} ] },
+        { q: "如果在秘境捡到一笔巨额灵石：", opts: [ {t: "全部投入最高效的修炼资源中", pts: [0,1]}, {t: "存入宗门钱庄，看着积蓄才有底气", pts: [4,2]}, {t: "换取那些华而不实的奇珍异宝", pts: [5,7]}, {t: "随缘散去，千金散尽还复来", pts: [3,6]} ] },
+        { q: "被人误解或者恶意中伤道心时：", opts: [ {t: "立刻列出事实铁证，以正视听", pts: [0,5]}, {t: "表面平静，内心气血翻涌自我怀疑", pts: [1,2]}, {t: "懒得辩解，清者自清", pts: [3,6]}, {t: "觉得对方境界太低，甚至有些可笑", pts: [4,7]} ] },
+        { q: "修行（学习/工作）遇到瓶颈不得寸进：", opts: [ {t: "翻遍藏经阁典籍，死磕到底", pts: [0,1]}, {t: "心境不稳，强行闭关试图冲关", pts: [5,4]}, {t: "暂且放下，下山去沾沾烟火气", pts: [6,3]}, {t: "尝试一些离经叛道的偏门功法", pts: [7,2]} ] },
+        { q: "你理想的洞府（居所）形态是：", opts: [ {t: "阵法森严、绝对安全的世外堡垒", pts: [4,1]}, {t: "人来人往、消息灵通的繁华坊市", pts: [2,5]}, {t: "无人问津、可以清净躺平的深山茅舍", pts: [6,7]}, {t: "一艘可以随时迁徙的云舟", pts: [3,0]} ] },
+        { q: "看到同门师弟一直在做蠢事坏了修行：", opts: [ {t: "忍不住出手，直接帮他拨乱反正", pts: [0,4]}, {t: "在心中暗自叹息，表面不作声", pts: [1,2]}, {t: "觉得有趣，甚至想加入一起胡闹", pts: [3,5]}, {t: "认为这也是一种独特的修行方式", pts: [7,6]} ] },
+        { q: "你对待世俗‘规矩’的态度是：", opts: [ {t: "无规矩不成方圆，理应遵守", pts: [4,0]}, {t: "仔细研读，寻找规矩之外的生机", pts: [1,3]}, {t: "视若无物，我心即是道", pts: [5,7]}, {t: "表面应承，暗地里能省则省", pts: [6,2]} ] },
+        { q: "你心底最深的恐惧是：", opts: [ {t: "失去对局面的掌控能力", pts: [0,4]}, {t: "一步踏错，万劫不复", pts: [1,2]}, {t: "被一道长久的契约死死束缚", pts: [3,5]}, {t: "变得和凡俗众人一样平庸", pts: [7,6]} ] },
+        { q: "面对彻底的失败，你的第一反应：", opts: [ {t: "极度自责，疯狂复盘哪里出了差错", pts: [0,1]}, {t: "道心破碎，急需找人倾诉", pts: [2,3]}, {t: "怒火中烧，想毁掉一切重头再来", pts: [5,4]}, {t: "觉得这只是一场大梦，无所谓", pts: [7,6]} ] },
+        { q: "你怎么看待所谓的‘天命’？", opts: [ {t: "我命由我不由天", pts: [0,5]}, {t: "一种精密庞杂的因果罗网", pts: [1,4]}, {t: "充满变数和机缘的混沌洪流", pts: [7,2]}, {t: "随波逐流，顺其自然", pts: [6,3]} ] },
+        { q: "你追求的终极逍遥状态是：", opts: [ {t: "万法归一，登临绝顶", pts: [0,5]}, {t: "洞悉世间一切真理真相", pts: [1,7]}, {t: "宗门和睦，所爱之人皆得安乐", pts: [2,4]}, {t: "斩断俗缘，获得绝对的清净自由", pts: [3,6]} ] }
+    ];
+
+    // 8大人格数据 (保持不变)
+    const personas = [
+        {
+            title: "铁剑门【天天给全派擦屁股的】大师兄/大师姐",
+            desc: "【高行动力·极致理性】本相：卷王，操心命。你的执行力极强，是个靠谱的六边形战士，但也因此总是被猪队友连累而感到无尽的焦虑。你累了。",
+            rumors: ["路人：此人剑气凌厉，但为何眼角常含打工人的泪水？", "二师弟：大师姐！！我的剑阵又布反把掌门困住了！救命！", "师傅：为师闭关了，那五百个烂摊子就交给你了哈。"]
+        },
+        {
+            title: "藏经阁【算卦算到狂掉头发的】常驻执事",
+            desc: "【高脑力·极致内耗】本相：思想上的巨人，行动上的矮子。你极其聪明，善于规划，但在行动前总要在脑海里把最坏结果演算800遍。",
+            rumors: ["路人：这藏经阁怎么天天往外冒青烟？CPU烧了？", "守门弟子：执事大人！别推演《防身阵》了，山贼等得都睡着了！", "老阁主：徒儿啊，再算下去，咱们阁里的灯油都要见底了！"]
+        },
+        {
+            title: "百草谷【听谁说话都容易心软的】掌门小师叔",
+            desc: "【高共情·重度感性】本相：讨好型/高敏感人群。你极其容易吸收别人的情绪垃圾，在乎外界评价。别人一卖惨，你就忍不住掏干家底。",
+            rumors: ["路人：听说百草谷那位活菩萨，昨天又被骗了二两银子。", "师侄：小师叔！您别听魔教俘虏讲童年了，他刚骗走最后一只烧鸡！", "师姐：你这软绵绵的性子，迟早要在江湖上吃大亏的！"]
+        },
+        {
+            title: "飞星派【三分钟热度又跑路了的】挂名客卿",
+            desc: "【高自由·随性乐天】本相：拒绝PUA，主打随遇而安。你兴趣广泛但极其容易放弃，讨厌被束缚。只要让你干正事，你跑得比御剑还快。",
+            rumors: ["路人：那个骑着猪跑过去的，是不是飞星派长老？", "掌门：客卿！您上月打的绝世神兵怎么还剩个剑柄！别跑！", "债主：他又换赛道了？昨天还说要种仙草，今天怎么去养仙鹤了！"]
+        },
+        {
+            title: "不动峰【天塌下来也要走流程的】守山大弟子",
+            desc: "【高防御·绝对守序】本相：极其稳定，抗压极强，但抗拒改变。如果遇到突发状况没有SOP（标准作业程序），你会直接宕机。",
+            rumors: ["路人：不动峰的人是不是都植入了死板的代码？", "师妹：大弟子！魔教打到食堂了！您怎么还在填《损坏公物登记表》！", "执法长老：按规矩办事，很好，但你能不能先拔剑？"]
+        },
+        {
+            title: "霹雳堂【一拍脑门就炸炉的】首席暴躁导师",
+            desc: "【高爆发·冲动破局】本相：灵感怪兽，不按套路出牌。你常常推翻重来，容易搞出毁天灭地的大破坏，但也偶尔能搞出跨时代的大创新。",
+            rumors: ["路人：卧槽！霹雳堂那个山头刚才是不是又被炸平了？", "助手：首席快跑！您发明的全自动御剑系统没装刹车，带着师傅冲进茅坑了！", "师傅（拿着刀）：孽徒！！你给我滚出来！！"]
+        },
+        {
+            title: "烂柯寺【看透内卷只想躺平的】扫地扫一半的僧人",
+            desc: "【低物欲·清醒摆烂】本相：看透了系统的内卷本质，主动拔掉网线，进入低功耗休眠模式。只要饿不死，坚决不干活。",
+            rumors: ["路人：这和尚怎么扫着扫着地，拄着扫帚睡着了？", "小沙弥：师叔祖！少林寺来抢香客了，您怎么还在罗汉像背后打呼噜？！", "方丈：阿弥陀佛，随他去吧，这叫清醒的赛博禅意。"]
+        },
+        {
+            title: "蓬莱岛【脑回路永远和凡人脱节的】游方散人",
+            desc: "【高直觉·浪漫脱世】本相：活在自己的精神宇宙里，不按世俗逻辑出牌。经常感到与当前世界的“版本不兼容”。",
+            rumors: ["路人：这人对着一堆破铜烂铁吟诗作对，病得不轻啊。", "徒弟：师傅！恶霸在砸摊子，您为什么在旁边赞叹这有一种‘赛博破碎美’？！", "仙友：他的频段太高，我们凡人的接收器解析不了他的脑电波。"]
+        }
+    ];
+
+    // 答案之书配置（对应8个人格，文案微调去中二化，改为灵机解读）
+    const adviceDB = [
+        [ // 1. 破军
+            { main: "“弓如满月，不发则折。”", sub: "灵机解读：心弦崩得太紧容易断裂。留两成余地给天意，别把自己逼到气绝。" },
+            { main: "“知止而后有定。”", sub: "灵机解读：你最大的问题是不知道何时收手。此刻，停下就是最好的修行。" },
+            { main: "“善战者，求之于势，不责于人。”", sub: "灵机解读：别死磕了。若是风向错了，你便是把剑挥断也没用。顺势而为。" }
+        ],
+        [ // 2. 天机
+            { main: "“机关算尽太聪明，反误了卿卿性命。”", sub: "灵机解读：推演已入死局。再犹豫下去，不仅错失机缘，还会损耗真元。" },
+            { main: "“绝圣弃智，民利百倍。”", sub: "灵机解读：在此事上，你的理智毫无用处。今日且抛弃脑子，凭直觉行事。" },
+            { main: "“大成若缺，其用不弊。”", sub: "灵机解读：追求完美是最大的心魔。带着三分瑕疵出世，好过永远在腹中难产。" }
+        ],
+        [ // 3. 红尘
+            { main: "“凡所有相，皆是虚妄。”", sub: "灵机解读：他人对你的评判不过是过眼云烟。别太当真，乱了道心。" },
+            { main: "“菩提本无树，明镜亦非台。”", sub: "灵机解读：学会闭塞视听。旁人的情绪尘埃，凭什么往你的灵台里扫？" },
+            { main: "“落花有意随流水，流水无心恋落花。”", sub: "灵机解读：这段机缘已尽。强行挽留只会显得可悲，撤手吧。" }
+        ],
+        [ // 4. 逍遥
+            { main: "“鹏之徙于南冥也...抟扶摇而上者九万里。”", sub: "灵机解读：你明明有扶摇直上的根骨，却天天在泥潭打滚。别混日子了，去九天看看。" },
+            { main: "“居安思危，思则有备。”", sub: "灵机解读：虽然眼下岁月静好，但请立刻为自己留条后路。一场未知的风雨正在靠近。" },
+            { main: "“玩物丧志。”", sub: "灵机解读：祖师警告：你的玩乐时光已严重耽误了正经修行。该干活了。" }
+        ],
+        [ // 5. 不动
+            { main: "“穷则变，变则通，通则久。”", sub: "灵机解读：你当下的境界已无法应对新的困局。不求“变”，就只能等死。" },
+            { main: "“流水不腐，户枢不蠹。”", sub: "灵机解读：你太久没有接纳新事物了，道心已如死水。今日去见个陌生人，或读本新书。" },
+            { main: "“反者道之动。”", sub: "灵机解读：顺着走不通的话，试试把现有的道理全部反过来想。反向行之，或许是破局关键。" }
+        ],
+        [ // 6. 惊雷
+            { main: "“企者不立，跨者不行。”", sub: "灵机解读：踮着脚是站不久的，步子迈太大容易扯着蛋。稳住下盘，别急着秀身法。" },
+            { main: "“三思而后行。”", sub: "灵机解读：别一拍脑袋就做决定！把你的念头压在心头十二个时辰，明日再看它是否还值得。" },
+            { main: "“静以修身，俭以养德。”", sub: "灵机解读：你现在的心火太旺了。闭关，禁言，打坐，把火气降下来再做决断。" }
+        ],
+        [ // 7. 忘忧
+            { main: "“天行健，君子以自强不息。”", sub: "灵机解读：你的休眠期太长，快要被天道判定为废人了。是时候醒来找点事做了。" },
+            { main: "“且将新火试新茶。诗酒趁年华。”", sub: "灵机解读：今日别想什么宏大命题了。去体验一点微小且真实的红尘乐事，比如一杯好茶。" },
+            { main: "“狂心顿歇，歇即菩提。”", sub: "灵机解读：既然已经决定放下，就别再去偷偷打听前尘往事了。彻底斩断尘缘。" }
+        ],
+        [ // 8. 幻梦
+            { main: "“仰望星空，脚踏实地。”", sub: "灵机解读：你可以神游太虚，但你的双脚必须踩在大地上。接点地气吧。" },
+            { main: "“独与天地精神往来。”", sub: "灵机解读：感到孤独是正常的。这说明你的境界太高，绝大多数凡人无法理解。享受这种孤独。" },
+            { main: "“庄生晓梦迷蝴蝶。”", sub: "灵机解读：别去纠结是幻是真了。只要你在这一刻的感受是痛或快乐的，它就是真的。" }
+        ]
+    ];
+
+    let currentQ = 0;
+    let scores = [0, 0, 0, 0, 0, 0, 0, 0];
+    let finalPersonaIndex = 0;
+    let rerollCount = 0;
+
+    function startQuiz() {
+        document.getElementById('intro-screen').classList.add('hidden');
+        document.getElementById('quiz-screen').classList.remove('hidden');
+        showQuestion();
+    }
+
+    function showQuestion() {
+        if (currentQ >= questions.length) {
+            calculateResult();
+            return;
+        }
+        document.getElementById('progress').style.width = ((currentQ) / questions.length * 100) + '%';
+        const qData = questions[currentQ];
+        document.getElementById('question-box').innerHTML = `<div class="question-title">第 ${currentQ + 1} 问：${qData.q}</div>`;
+        let optsHtml = '';
+        qData.opts.forEach((opt) => {
+            optsHtml += `<button class="option" onclick="answer(${JSON.stringify(opt.pts)})">${opt.t}</button>`;
+        });
+        document.getElementById('options-box').innerHTML = optsHtml;
+    }
+
+    function answer(ptsArray) {
+        ptsArray.forEach(pt => scores[pt] += 1);
+        currentQ++;
+        showQuestion();
+    }
+
+    function calculateResult() {
+        document.getElementById('quiz-screen').classList.add('hidden');
+        document.getElementById('result-screen').classList.remove('hidden');
+        
+        let maxScore = -1;
+        for (let i = 0; i < scores.length; i++) {
+            // 简单的随机打破平局，增加趣味性
+            let randomBoost = Math.random() * 0.5; 
+            if (scores[i] + randomBoost > maxScore) {
+                maxScore = scores[i] + randomBoost;
+                finalPersonaIndex = i;
+            }
+        }
+
+        const persona = personas[finalPersonaIndex];
+        document.getElementById('res-title').innerText = persona.title;
+        document.getElementById('res-desc').innerText = persona.desc;
+        document.getElementById('rumor-1').innerText = persona.rumors[0];
+        document.getElementById('rumor-2').innerText = persona.rumors[1];
+        document.getElementById('rumor-3').innerText = persona.rumors[2];
+    }
+
+    function revealAdvice() {
+        document.getElementById('btn-advice').style.display = 'none';
+        document.getElementById('advice-box').style.display = 'block';
+        showRandomAdvice();
+    }
+
+    function showRandomAdvice() {
+        const advices = adviceDB[finalPersonaIndex];
+        const randomAd = advices[Math.floor(Math.random() * advices.length)];
+        document.getElementById('advice-main').innerText = randomAd.main;
+        document.getElementById('advice-sub').innerText = randomAd.sub;
+    }
+
+    function rerollAdvice() {
+        rerollCount++;
+        if (rerollCount > 3) {
+            alert("⚠️ 祖师神念传音：年轻人莫要太贪心！天机不可泄露太多，随缘即是正道！");
+            return;
+        }
+        const box = document.getElementById('advice-box');
+        box.style.opacity = 0; box.style.transform = 'translateY(10px)';
+        setTimeout(() => {
+            showRandomAdvice();
+            box.style.opacity = 1; box.style.transform = 'translateY(0)';
+        }, 300);
+    }
+</script>
+</body>
+</html>
